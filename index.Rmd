@@ -1,0 +1,46 @@
+---
+title: "index"
+author: "Karol Sontowski"
+date: '2022-04-10'
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(here)
+library(tidyverse)
+```
+
+# Final project
+
+This is my final project for PSY6422 Data Analysis and Visualisation
+
+```{r dataimport}
+
+# importing of the data
+
+df <- read.csv(here("data", "stroke.csv"))
+head(df)  # displaying the top of the data frame
+
+```
+
+
+
+```{R message=FALSE, warning=FALSE}
+# scatterplot
+
+p1 <- ggplot(df, aes(x=age, y=bmi, color = gender))
+p1 + geom_point() + geom_smooth(formula = y~x, method='lm')
+
+p2 <- ggplot(df, aes(x=age, y=bmi, color = gender))
+p2 + geom_jitter(height = 0, width = 0.3) + geom_smooth(formula = y~x, method='lm')
+
+ggsave(here("plots", "myplot.png"))
+
+class(df$avg_glucose_level)
+```
+
+## Discussion
+
+Here it is!
