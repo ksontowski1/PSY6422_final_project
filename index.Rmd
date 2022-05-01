@@ -131,9 +131,7 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6}
-
 coeff <- 10 
-
 #colour spec to use in the visualisation 
 bmi_color <- "#69b3a2"
 avg_glucose_color <- rgb(0.2, 0.6, 0.9, 1)
@@ -143,7 +141,7 @@ ggplot(df_new_sample, aes(x=age, col=stroke)) +
   
   geom_point( aes(y=bmi), color=bmi_color, shape=17, alpha=0.5) + 
   geom_point( aes(y=avg_glucose_level /coeff), color=avg_glucose_color, shape = 19, alpha=0.5) +
-  scale_colour_viridis_d(option = "C", direction = -1) +
+  scale_colour_viridis_d(option = "C", direction = -1) + #colorblind palette
 
   geom_smooth(aes(y=bmi), method = "lm")+
   geom_smooth(aes(y=avg_glucose_level /coeff), method = "lm") +
@@ -165,7 +163,9 @@ ggplot(df_new_sample, aes(x=age, col=stroke)) +
        ")\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
        ", SD BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
        "\nM = ", males_total, ", F = ", females_total)) 
-  
+```
+
+```{r message=FALSE, warning=FALSE, include = FALSE,  fig.width=10, fig.height=6}
 ggsave(here("plots", "visualisation_1_bmi_glucose_stroke.png")) 
 ```
 #### **Commentary**
@@ -200,7 +200,8 @@ df_stroke <- gather(df_stroke, condition, measurement,
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4}
 #stacked barchart
 
-df_stroke$measurement <- factor(df_stroke$measurement, levels = c("Unknown","smokes","never smoked", "formerly smoked",
+df_stroke$measurement <- factor(df_stroke$measurement, 
+               levels = c("Unknown","smokes","never smoked", "formerly smoked",
                "Male", "Female", "Urban","Rural", "Self-employed", "children",
                "Private","Govt_job","Yes", "No"))
 
@@ -240,15 +241,15 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
  guides(
   fill = guide_legend(
     title = "Risk factors",
-    override.aes = aes(label = "")
+    override.aes = aes(label = "")))
+```
 
- )
-)
+```{r message=FALSE, warning=FALSE, include = FALSE, fig.width=9, fig.height=4}
   ggsave(here("plots", "visualisation_2_risk_factors.png")) 
 ```
 #### **Commentary**
 
-The purpose of this chart was to look at only the stroke patients (N= `r n_stroke`) risk factors to see if any factor stands out more due to occurring in more individuals.  Surprisingly majority of the individuals that got stroke were married. Although correlation does not cause causation, we could point a stress as contributing factor. Nevertheless, we can see slight differences for gender (F = `r females_stroke_total` vs M = `r males_stroke_total`) and work type (Private = 149) and leaving in urban area (N = 135). Smoking status data could be interesting to evaluate as its known for causing cardiovascular diseases however 47 records did not contain this information. Beside the marriage factor, unfortunately none of these factors occurs often enough in stroke patients to draw any major conclusions. Surprisingly and opposite to scientific research results, the heart disease and hypertension were not present in many patients that suffered from stroke. 
+The purpose of this chart was to look at only the stroke patients (N= `r n_stroke`) risk factors to see if any factor stands out more due to occurring in more individuals.  Surprisingly majority of the individuals that got stroke were married. Although correlation does not cause causation, we could point a stress as contributing factor. Nevertheless, we can see slight differences for gender (F = `r females_stroke_total` vs M = `r males_stroke_total`) and work type (Private = 60%) and leaving in urban area (54%). Smoking status data could be interesting to evaluate as its known for causing cardiovascular diseases however 19% records did not contain this information. Beside the marriage factor, unfortunately none of these factors occurs often enough in stroke patients to draw any major conclusions. Surprisingly and opposite to scientific research results, the heart disease and hypertension were not present in many patients that suffered from stroke. 
 
 
 ### **Summary and Discussion**
@@ -256,7 +257,7 @@ The purpose of this chart was to look at only the stroke patients (N= `r n_strok
 Initially when started this project, I was a bit confused as what to do with the data. I wanted to use as much of data in the set as possible to create my visualisation. Along the way, I have tried different plots, tried using animation, but decided that it does not add any benefit to what I want to present. Nevertheless, once progressed, understood more and more how R works, so it became easier and every day had more ideas and was eager to try if they work. My self-learning got to the point that could have quickly identify what is wrong and how to make it work. Substantial amount of time I have spent on re-reading the code and trying to find simpler and less space-consuming code that works in the same way. I have truly enjoyed this project and will definitely use R going forward for my work instead of Excel.
 
 #### **Caveats:**
-1. Missing values for smoking status (47) so could not assess properly the impact of smoking
+1. Missing values for smoking status (19%) so could not assess properly the impact of smoking
 2. Small amount of stroke patients (`r n_stroke`), it would be great to have equal size sample as no stroke (`r n_no_stroke`)
 3. There is nothing about the sample ethnicity, location, year, that would be a great addition for more thorough investigation on the subject. 
 4. It was a small data set with limited possibilities. 
