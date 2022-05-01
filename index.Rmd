@@ -2,8 +2,8 @@
 title: "stroke"
 output:
   
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include = FALSE}
