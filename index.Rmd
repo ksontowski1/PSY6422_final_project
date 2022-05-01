@@ -141,32 +141,31 @@ avg_glucose_color <- rgb(0.2, 0.6, 0.9, 1)
 #plot vis1
 ggplot(df_new_sample, aes(x=age, col=stroke)) +
   
-  geom_point( aes(y=bmi*coeff), color=bmi_color, shape=17, alpha=0.5) + 
-  geom_point( aes(y=avg_glucose_level), color=avg_glucose_color, shape = 19, alpha=0.5) +
+  geom_point( aes(y=bmi), color=bmi_color, shape=17, alpha=0.5) + 
+  geom_point( aes(y=avg_glucose_level /coeff), color=avg_glucose_color, shape = 19, alpha=0.5) +
   scale_colour_viridis_d(option = "C", direction = -1) +
 
-  geom_smooth(aes(y=bmi*coeff), method = "lm")+
-  geom_smooth(aes(y=avg_glucose_level), method = "lm") +
+  geom_smooth(aes(y=bmi), method = "lm")+
+  geom_smooth(aes(y=avg_glucose_level /coeff), method = "lm") +
   scale_y_continuous(
     name = "Body mass index",
-    sec.axis = sec_axis(~., name="Average glucose level")
+    sec.axis = sec_axis(~.*coeff, name="Average glucose level")
   ) +
   theme(
     axis.title.y = element_text(color = bmi_color, size=13),
-    axis.title.y.right = element_text(color = avg_glucose_color, size=13)
+    axis.title.y.right = element_text(color = avg_glucose_color, size=13), 
+        plot.title = element_text(hjust = 0.5, size = 19)
     ) +
   labs(title="BMI, glucose levels vs age and stroke occurence",
        subtitle = paste(
-       "Mean avg glucose level ( stroke = ",means_stroke$avg_glucose_level,
+       "Mean glucose level ( stroke = ",means_stroke$avg_glucose_level,
        ", no stroke = ", means_no_stroke$avg_glucose_level,")",
-       "\nSD for avg glucose level ( stroke = ",sd_stroke$avg_glucose_level,
-       ", no stroke = ", sd_no_stroke$avg_glucose_level, ")",
-       "\n",
-       "\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
-       "\nSD for BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
-       "\n",
-       "\nM = ", males_total, ", F = ", females_total))
-
+       ", SD glucose level ( stroke = ",sd_stroke$avg_glucose_level,
+       ", no stroke = ", sd_no_stroke$avg_glucose_level,
+       ")\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
+       ", SD BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
+       "\nM = ", males_total, ", F = ", females_total)) 
+  
 ggsave(here("plots", "visualisation_1_bmi_glucose_stroke.png")) 
 ```
 #### **Commentary**
@@ -232,7 +231,6 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
         panel.background = element_blank(), 
         plot.title = element_text(hjust = 0.5, size = 19), 
         plot.subtitle = element_text(hjust = 0.1))+
-    
   #title and subtitle of the chart 
   labs(
     title="Stroke risk factors occurence in stroke patients", 
