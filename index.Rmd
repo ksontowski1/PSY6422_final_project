@@ -211,7 +211,7 @@ p2 + geom_bar(
     option="H",
     direction = -1, 
     # arranging legend order to correspond to variables order
-    limits = c("Unknown","formerly smoked", "smokes", "never smoked", "Female", "Male", "Rural","Urban", "Govt_job",  "Self-employed","children", "Private", "No", "Yes")) +
+    limits = c("Unknown","smokes","never smoked", "formerly smoked", "Male", "Female", "Urban","Rural", "Self-employed",  "Private","Govt_job", "children", "Yes", "No")) +
   #title and subtitle of the chart 
   labs(
     title="Stroke risk factors occurence in stroke patients", 
@@ -227,6 +227,7 @@ p2 + geom_bar(
   fill = guide_legend(
     title = "Risk factors",
     override.aes = aes(label = "")
+    
   )
 )
 
