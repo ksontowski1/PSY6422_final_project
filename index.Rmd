@@ -1,13 +1,14 @@
 ---
-title: "index"
+title: "stroke"
 output:
   
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 
 library(here)
 library(tidyverse)
@@ -63,12 +64,13 @@ Please find the [link to the data](https://www.kaggle.com/datasets/fedesoriano/s
 ### **Initial data checks and preparation**
 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, tidy=TRUE}
 #importing of the data
 df <- read.csv(here("data", "stroke.csv"))
-head(df, n=3)  # displaying the top of the data frame, only 3 rows as there are many columns and want to show all of them, instead of specifying number of columns 
+head(df, n=3)  #displaying the top of the data frame, only 3 rows  
 
-#unification - changing binary values (1,0) to Yes,No as the stroke, hypertension,heart disease columns had 1,0 values but ever_married had Yes and No
+#unification - changing binary values (1,0) to Yes,No 
+#as the stroke, hypertension,heart disease columns had 1,0 but ever_married had Yes,No
 df$stroke <- df$stroke %>% recode('1' = "Yes", '0' = "No")
 df$hypertension <- df$hypertension %>% recode('1' = "Yes", '0' = "No")
 df$heart_disease <- df$heart_disease %>% recode('1' = "Yes", '0' = "No")
@@ -81,7 +83,7 @@ The original data set contains 5110 rows. Unfortunately 201 had to be removed as
 
 However, for the purpose of Visualisation 1, I have removed the blank BMI rows which left me with 4909 rows (209 stroke and 4700 no stroke). I have sampled the no stroke group for 209 random rows to match with the stroke group. Visualisation 1 is based on the group of 418 individuals (209 stroke, 209 no stroke).
 
-```{r message=FALSE, warning=FALSE }
+```{r message=FALSE, warning=FALSE,  tidy=TRUE }
 #setting dataset for Visualisation 2 with only stroke patients
 df_stroke <- filter(df,stroke =="Yes") 
 
@@ -98,7 +100,7 @@ df_new_stroke <- filter(df_new, stroke == "Yes")
 #randomly choosing 209 no stroke rows to have equal number as with the stroke group 
 df_new_no_stroke_sample <- df_new_no_stroke %>% sample_n(209, replace = FALSE, prob = NULL)
 
-#combining new datasets for Visualisation 1 into new data set of 418 (209 each group) values
+#combining new datasets for Vis 1 into new data set of 418 (209 each group) values
 df_new_sample <- rbind(df_new_stroke, df_new_no_stroke_sample)
 
 #while inspecting the data notice gender as other so checking how many and removing
@@ -112,7 +114,7 @@ females_total <- nrow(df_new_sample[df_new_sample$gender == "Male",])
 ### **Average glucose levels and BMI over lifespan and stroke occurence**
 
 #### Preparation of the data for the first visualisation
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE,  tidy=TRUE}
 #means and sd and saving as data frame
 means_stroke <- df_new_stroke %>% summarise_if(is.numeric, mean)
 means_no_stroke <- df_new_no_stroke %>% summarise_if(is.numeric, mean)
@@ -127,9 +129,9 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 ```
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
-```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6,  tidy=TRUE}
 
-coeff <- 10 #in order to increase the value of BMI as it's lower than glucose for the visualisation
+coeff <- 10 
 
 #colour spec to use in the visualisation 
 bmi_color <- "#69b3a2"
@@ -153,15 +155,16 @@ ggplot(df_new_sample, aes(x=age, col=stroke)) +
     axis.title.y.right = element_text(color = avg_glucose_color, size=13)
     ) +
   labs(title="BMI, glucose levels vs age and stroke occurence",
-       subtitle = paste("Mean avg glucose level ( stroke = ",means_stroke$avg_glucose_level,
-                                         ", no stroke = ", means_no_stroke$avg_glucose_level,")",
-                      "\nSD for avg glucose level ( stroke = ",sd_stroke$avg_glucose_level,
-                                                ", no stroke = ", sd_no_stroke$avg_glucose_level, ")",
-                      "\n",
-                      "\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
-                      "\nSD for BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
-                      "\n",
-                    "\nM = ", males_total, ", F = ", females_total))
+       subtitle = paste(
+       "Mean avg glucose level ( stroke = ",means_stroke$avg_glucose_level,
+       ", no stroke = ", means_no_stroke$avg_glucose_level,")",
+       "\nSD for avg glucose level ( stroke = ",sd_stroke$avg_glucose_level,
+       ", no stroke = ", sd_no_stroke$avg_glucose_level, ")",
+       "\n",
+       "\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
+       "\nSD for BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
+       "\n",
+       "\nM = ", males_total, ", F = ", females_total))
 
 ggsave(here("plots", "visualisation_1_bmi_glucose_stroke.png")) 
 ```
@@ -173,7 +176,7 @@ Nevertheless, body mass index opposite to the glucose levels, is not significant
 ### **Stroke factors overview based on people who suffered from stroke**
 
 #### Preparing the data for the second visualisation
-```{r message=FALSE, warning=FALSE }
+```{r message=FALSE, warning=FALSE,  tidy=TRUE }
 #gender count of stroke patients
 males_stroke_total <- nrow(df_stroke[df_stroke$gender == "Male",])
 females_stroke_total <- nrow(df_stroke[df_stroke$gender == "Female",])
@@ -186,13 +189,15 @@ n_no_stroke <-nrow(df[df$stroke == "No",])
 df_stroke <- df_stroke %>% relocate(smoking_status, .before = avg_glucose_level)
 df_stroke <- df_stroke %>% relocate(gender, .before = smoking_status)
 
-#changing from wide to long type data to so chosen columns are now as rows and can use them in bar chart below 
+#changing from wide to long type data
+#so chosen columns are now as rows and can use them in bar chart below 
 df_stroke$id <- factor(df_stroke$id)
-df_stroke <- gather(df_stroke, condition, measurement, hypertension:smoking_status, factor_key = TRUE)
+df_stroke <- gather(df_stroke, condition, measurement, 
+                    hypertension:smoking_status, factor_key = TRUE)
 ```
 
 #### **Visualisation 2:** Stroke risk factors occurence in stroke patients
-```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4,  tidy=TRUE}
 #stacked barchart
 p2 <- ggplot(df_stroke, aes(x=condition, fill = factor(measurement)))
 p2 + geom_bar(
@@ -211,7 +216,9 @@ p2 + geom_bar(
     option="H",
     direction = -1, 
     # arranging legend order to correspond to variables order
-    limits = c("Unknown","smokes","never smoked", "formerly smoked", "Male", "Female", "Urban","Rural", "Self-employed",  "Private","Govt_job", "children", "Yes", "No")) +
+    limits = c("Unknown","smokes","never smoked", "formerly smoked", 
+               "Male", "Female", "Urban","Rural", "Self-employed",  
+               "Private","Govt_job", "children", "Yes", "No")) +
   #title and subtitle of the chart 
   labs(
     title="Stroke risk factors occurence in stroke patients", 
