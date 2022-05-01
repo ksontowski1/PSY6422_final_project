@@ -217,7 +217,7 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
     limits = c("formerly smoked", "never smoked", "smokes", "Unknown",
                "Female", "Male", "Rural","Urban", "Govt_job", 
                "Private", "children", "Self-employed", "No", "Yes")) +
-  scale_colour_manual(values=c("#ffffff"))+
+  scale_colour_manual(values=c("#FFFFFF"))+
   geom_label(data = . %>% 
               group_by(condition, measurement) %>%
               tally() %>%
@@ -228,13 +228,16 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
             position = position_stack(vjust = 0.5),
             show.legend = FALSE) +
    scale_y_continuous(labels= scales::percent) +
-  theme(axis.title.x=element_blank(), panel.background = element_blank())+
+  theme(axis.title.x=element_blank(), 
+        panel.background = element_blank(), 
+        plot.title = element_text(hjust = 0.5, size = 19), 
+        plot.subtitle = element_text(hjust = 0.1))+
     
   #title and subtitle of the chart 
   labs(
     title="Stroke risk factors occurence in stroke patients", 
-    subtitle = paste("Mean stroke age = ",   means_stroke$age,"years"),
-    y = "Total number of people that had stroke") +
+    subtitle = paste("Mean stroke age = ",means_stroke$age,"years,", "N = ", n_stroke),
+    x = "Stroke risk factors") +
   coord_flip() +
  guides(
   fill = guide_legend(
