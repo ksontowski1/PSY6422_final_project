@@ -2,8 +2,8 @@
 title: "index"
 output:
   
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include = FALSE}
@@ -57,7 +57,7 @@ Additionally collected data include:
 
 Unfortunately the source of this data is classified as confidential.
 
-Please find the [link to the data ](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset) on Kaggle.com.
+Please find the [link to the data](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset) on Kaggle.com.
 
 
 ### **Initial data checks and preparation**
@@ -127,7 +127,7 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 ```
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10}
 
 coeff <- 10 #in order to increase the value of BMI as it's lower than glucose for the visualisation
 
@@ -164,7 +164,6 @@ ggplot(df_new_sample, aes(x=age, col=stroke)) +
                     "\nM = ", males_total, ", F = ", females_total))
 
 ggsave(here("plots", "visualisation_1_bmi_glucose_stroke.png")) 
-
 ```
 #### **Commentary**
 
@@ -193,19 +192,20 @@ df_stroke <- gather(df_stroke, condition, measurement, hypertension:smoking_stat
 ```
 
 #### **Visualisation 2:** Stroke risk factors occurence in stroke patients
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4}
 #stacked barchart
-p2 <- ggplot(df_stroke, aes(x=condition, fill = factor(measurement), dpi = 300) )
+p2 <- ggplot(df_stroke, aes(x=condition, fill = factor(measurement)))
 p2 + geom_bar(
     stat = "count", 
-    width = 0.6, 
+    width = 0.8, 
     colour = "white", 
-    size = 0.5) +
-  geom_text(aes(label = ..count..), 
+    size = 1) +
+  geom_label(aes(label = ..count..), 
     stat = "count", 
     position = position_stack(vjust=0.5), 
     col = 'white',  
-    fontface = "bold") +
+    fontface = "bold")  +
+  
   #colorblind pallette application
   scale_fill_viridis_d( 
     option="H",
@@ -222,8 +222,13 @@ p2 + geom_bar(
     theme(
      panel.grid.major.y = element_blank(),
      panel.grid.minor.y = element_blank()) +
-  
-   coord_flip() 
+   coord_flip() +
+  guides(
+  fill = guide_legend(
+    title = "Risk factors",
+    override.aes = aes(label = "")
+  )
+)
 
 ggsave(here("plots", "visualisation_2_risk_factors.png")) 
 ```
@@ -241,3 +246,6 @@ Initially when started this project, I was a bit confused as what to do with the
 2. Small amount of stroke patients (`r n_stroke`), it would be great to have equal size sample as no stroke (`r n_no_stroke`)
 3. There is nothing about the sample ethnicity, location, year, that would be a great addition for more thorough investigation on the subject. 
 4. It was a small data set with limited possibilities. 
+
+
+**Published:** [Link to github repo](https://ksontowski1.github.io/PSY6422_final_project/)
