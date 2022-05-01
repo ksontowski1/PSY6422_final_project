@@ -2,8 +2,8 @@
 title: "stroke"
 output:
   
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include = FALSE}
@@ -266,5 +266,6 @@ Initially when started this project, I was a bit confused as what to do with the
 3. There is nothing about the sample ethnicity, location, year, that would be a great addition for more thorough investigation on the subject. 
 4. It was a small data set with limited possibilities. 
 
+[Link to published version](https://ksontowski1.github.io/PSY6422_final_project/)
 
-**Published:** [Link to github repo](https://ksontowski1.github.io/PSY6422_final_project/)
+[Link to github repo](https://github.com/ksontowski1/PSY6422_final_project)
