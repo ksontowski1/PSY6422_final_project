@@ -240,7 +240,7 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
   coord_flip() +
  guides(
   fill = guide_legend(
-    title = "Risk factors",
+    title = "Legend",
     override.aes = aes(label = "")))
 ```
 
