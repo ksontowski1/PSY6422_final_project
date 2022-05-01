@@ -64,7 +64,7 @@ Please find the [link to the data](https://www.kaggle.com/datasets/fedesoriano/s
 ### **Initial data checks and preparation**
 
 
-```{r message=FALSE, warning=FALSE, tidy=TRUE}
+```{r message=FALSE, warning=FALSE}
 #importing of the data
 df <- read.csv(here("data", "stroke.csv"))
 head(df, n=3)  #displaying the top of the data frame, only 3 rows  
@@ -83,7 +83,7 @@ The original data set contains 5110 rows. Unfortunately 201 had to be removed as
 
 However, for the purpose of Visualisation 1, I have removed the blank BMI rows which left me with 4909 rows (209 stroke and 4700 no stroke). I have sampled the no stroke group for 209 random rows to match with the stroke group. Visualisation 1 is based on the group of 418 individuals (209 stroke, 209 no stroke).
 
-```{r message=FALSE, warning=FALSE,  tidy=TRUE }
+```{r message=FALSE, warning=FALSE}
 #setting dataset for Visualisation 2 with only stroke patients
 df_stroke <- filter(df,stroke =="Yes") 
 
@@ -114,7 +114,7 @@ females_total <- nrow(df_new_sample[df_new_sample$gender == "Male",])
 ### **Average glucose levels and BMI over lifespan and stroke occurence**
 
 #### Preparation of the data for the first visualisation
-```{r message=FALSE, warning=FALSE,  tidy=TRUE}
+```{r message=FALSE, warning=FALSE}
 #means and sd and saving as data frame
 means_stroke <- df_new_stroke %>% summarise_if(is.numeric, mean)
 means_no_stroke <- df_new_no_stroke %>% summarise_if(is.numeric, mean)
@@ -129,7 +129,7 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 ```
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
-```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6,  tidy=TRUE}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6}
 
 coeff <- 10 
 
@@ -176,7 +176,7 @@ Nevertheless, body mass index opposite to the glucose levels, is not significant
 ### **Stroke factors overview based on people who suffered from stroke**
 
 #### Preparing the data for the second visualisation
-```{r message=FALSE, warning=FALSE,  tidy=TRUE }
+```{r message=FALSE, warning=FALSE}
 #gender count of stroke patients
 males_stroke_total <- nrow(df_stroke[df_stroke$gender == "Male",])
 females_stroke_total <- nrow(df_stroke[df_stroke$gender == "Female",])
@@ -197,7 +197,7 @@ df_stroke <- gather(df_stroke, condition, measurement,
 ```
 
 #### **Visualisation 2:** Stroke risk factors occurence in stroke patients
-```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4,  tidy=TRUE}
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4}
 #stacked barchart
 p2 <- ggplot(df_stroke, aes(x=condition, fill = factor(measurement)))
 p2 + geom_bar(
@@ -250,7 +250,7 @@ The purpose of this chart was to look at only the stroke patients (N= `r n_strok
 Initially when started this project, I was a bit confused as what to do with the data. I wanted to use as much of data in the set as possible to create my visualisation. Along the way, I have tried different plots, tried using animation, but decided that it does not add any benefit to what I want to present. Nevertheless, once progressed, understood more and more how R works, so it became easier and every day had more ideas and was eager to try if they work. My self-learning got to the point that could have quickly identify what is wrong and how to make it work. Substantial amount of time I have spent on re-reading the code and trying to find simpler and less space-consuming code that works in the same way. I have truly enjoyed this project and will definitely use R going forward for my work instead of Excel.
 
 #### **Caveats:**
-1. Missing values for smoking status (47) so could not assess properly the impact of smoking  
+1. Missing values for smoking status (47) so could not assess properly the impact of smoking
 2. Small amount of stroke patients (`r n_stroke`), it would be great to have equal size sample as no stroke (`r n_no_stroke`)
 3. There is nothing about the sample ethnicity, location, year, that would be a great addition for more thorough investigation on the subject. 
 4. It was a small data set with limited possibilities. 
