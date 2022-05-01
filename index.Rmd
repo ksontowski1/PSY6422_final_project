@@ -98,7 +98,8 @@ df_new_no_stroke <- filter(df_new, stroke == "No")
 df_new_stroke <- filter(df_new, stroke == "Yes")
 
 #randomly choosing 209 no stroke rows to have equal number as with the stroke group 
-df_new_no_stroke_sample <- df_new_no_stroke %>% sample_n(209, replace = FALSE, prob = NULL)
+df_new_no_stroke_sample <- df_new_no_stroke %>% sample_n(209, replace = FALSE, 
+                                                              prob = NULL)
 
 #combining new datasets for Vis 1 into new data set of 418 (209 each group) values
 df_new_sample <- rbind(df_new_stroke, df_new_no_stroke_sample)
@@ -131,7 +132,7 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6}
-coeff <- 10 
+coeff <- 10 #variable to use to set axis differently for 2 variables
 #colour spec to use in the visualisation 
 bmi_color <- "#69b3a2"
 avg_glucose_color <- rgb(0.2, 0.6, 0.9, 1)
@@ -140,7 +141,9 @@ avg_glucose_color <- rgb(0.2, 0.6, 0.9, 1)
 ggplot(df_new_sample, aes(x=age, col=stroke)) +
   
   geom_point( aes(y=bmi), color=bmi_color, shape=17, alpha=0.5) + 
-  geom_point( aes(y=avg_glucose_level /coeff), color=avg_glucose_color, shape = 19, alpha=0.5) +
+  geom_point( aes(y=avg_glucose_level /coeff), 
+              color=avg_glucose_color, 
+              shape = 19, alpha=0.5) +
   scale_colour_viridis_d(option = "C", direction = -1) + #colorblind palette
 
   geom_smooth(aes(y=bmi), method = "lm")+
@@ -160,7 +163,8 @@ ggplot(df_new_sample, aes(x=age, col=stroke)) +
        ", no stroke = ", means_no_stroke$avg_glucose_level,")",
        ", SD glucose level ( stroke = ",sd_stroke$avg_glucose_level,
        ", no stroke = ", sd_no_stroke$avg_glucose_level,
-       ")\nMean BMI ( stroke = ",means_stroke$bmi, ", no stroke = ", means_no_stroke$bmi,")",
+       ")\nMean BMI ( stroke = ",means_stroke$bmi, 
+       ", no stroke = ", means_no_stroke$bmi,")",
        ", SD BMI ( stroke = ",sd_stroke$bmi, ", no stroke = ", sd_no_stroke$bmi,")",
        "\nM = ", males_total, ", F = ", females_total)) 
 ```
@@ -217,18 +221,18 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
     limits = c("formerly smoked", "never smoked", "smokes", "Unknown",
                "Female", "Male", "Rural","Urban", "Govt_job", 
                "Private", "children", "Self-employed", "No", "Yes")) +
-  scale_colour_manual(values=c("#FFFFFF"))+
+  scale_colour_manual(values=c("#FFFFFF"))+ #colour of the % as wanted to be different
   geom_label(data = . %>% 
               group_by(condition, measurement) %>%
               tally() %>%
-              mutate(p = n / sum(n)) %>%
+              mutate(p = n / sum(n)) %>% #values in %
               ungroup(),
             aes(y = p, label = scales::percent(p, accuracy = 1),  
     fontface = "bold", color = "white"),
             position = position_stack(vjust = 0.5),
             show.legend = FALSE) +
-   scale_y_continuous(labels= scales::percent) +
-  theme(axis.title.x=element_blank(), 
+   scale_y_continuous(labels= scales::percent) + #axis to be in %
+  theme(axis.title.x=element_blank(), #adjusting the look 
         panel.background = element_blank(), 
         plot.title = element_text(hjust = 0.5, size = 19), 
         plot.subtitle = element_text(hjust = 0.1))+
@@ -237,11 +241,11 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
     title="Stroke risk factors occurence in stroke patients", 
     subtitle = paste("Mean stroke age = ",means_stroke$age,"years,", "N = ", n_stroke),
     x = "Stroke risk factors") +
-  coord_flip() +
+  coord_flip() + #change orientation
  guides(
   fill = guide_legend(
     title = "",
-    override.aes = aes(label = "")))
+    override.aes = aes(label = ""))) #override to remove titles etc
 ```
 
 ```{r message=FALSE, warning=FALSE, include = FALSE, fig.width=9, fig.height=4}
