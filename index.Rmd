@@ -126,6 +126,7 @@ means_stroke <- round(means_stroke, digits = 2)
 means_no_stroke <-round(means_no_stroke, digits =2)
 sd_stroke <- round(sd_stroke, digits = 2)
 sd_no_stroke <- round(sd_no_stroke, digits = 2)
+
 ```
 
 #### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
@@ -199,46 +200,50 @@ df_stroke <- gather(df_stroke, condition, measurement,
 #### **Visualisation 2:** Stroke risk factors occurence in stroke patients
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=9, fig.height=4}
 #stacked barchart
-p2 <- ggplot(df_stroke, aes(x=condition, fill = factor(measurement)))
-p2 + geom_bar(
-    stat = "count", 
+
+df_stroke$measurement <- factor(df_stroke$measurement, levels = c("Unknown","smokes","never smoked", "formerly smoked",
+               "Male", "Female", "Urban","Rural", "Self-employed", "children",
+               "Private","Govt_job","Yes", "No"))
+
+p2 <- ggplot(df_stroke,aes(condition, fill=measurement)) 
+  p2 + geom_bar(position = 'fill', stat = "count", 
     width = 0.8, 
     colour = "white", 
     size = 1) +
-  geom_label(aes(label = ..count..), 
-    stat = "count", 
-    position = position_stack(vjust=0.5), 
-    col = 'white',  
-    fontface = "bold")  +
-  
-  #colorblind pallette application
-  scale_fill_viridis_d( 
+  scale_fill_viridis_d(
     option="H",
-    direction = -1, 
+    direction = -1,
     # arranging legend order to correspond to variables order
-    limits = c("Unknown","smokes","never smoked", "formerly smoked", 
-               "Male", "Female", "Urban","Rural", "Self-employed",  
-               "Private","Govt_job", "children", "Yes", "No")) +
+    limits = c("formerly smoked", "never smoked", "smokes", "Unknown",
+               "Female", "Male", "Rural","Urban", "Govt_job", 
+               "Private", "children", "Self-employed", "No", "Yes")) +
+  scale_colour_manual(values=c("#ffffff"))+
+  geom_label(data = . %>% 
+              group_by(condition, measurement) %>%
+              tally() %>%
+              mutate(p = n / sum(n)) %>%
+              ungroup(),
+            aes(y = p, label = scales::percent(p, accuracy = 1),  
+    fontface = "bold", color = "white"),
+            position = position_stack(vjust = 0.5),
+            show.legend = FALSE) +
+   scale_y_continuous(labels= scales::percent) +
+  theme(axis.title.x=element_blank(), panel.background = element_blank())+
+    
   #title and subtitle of the chart 
   labs(
     title="Stroke risk factors occurence in stroke patients", 
     subtitle = paste("Mean stroke age = ",   means_stroke$age,"years"),
-    y = "Total number of people that had stroke", 
-    x = "Stroke risk factors") +
-  #removing y grid as not needed for this graph
-    theme(
-     panel.grid.major.y = element_blank(),
-     panel.grid.minor.y = element_blank()) +
-   coord_flip() +
-  guides(
+    y = "Total number of people that had stroke") +
+  coord_flip() +
+ guides(
   fill = guide_legend(
     title = "Risk factors",
     override.aes = aes(label = "")
-    
-  )
-)
 
-ggsave(here("plots", "visualisation_2_risk_factors.png")) 
+ )
+)
+  ggsave(here("plots", "visualisation_2_risk_factors.png")) 
 ```
 #### **Commentary**
 
