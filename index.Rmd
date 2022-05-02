@@ -21,11 +21,10 @@ library(tinytex)
 
 
 ```
-## Can we predict the stroke? Looking into factors that may contribute to getting a stroke
+## Can we predict the stroke? Investigation of the stroke risk factors.
 
 ### **Research question**
-Stroke is one of the **leading causes of death and disability** in the UK and in the world. According to UK statistics **100,000 people** have stroke each year. Although anyone can have a stroke at any age, certain medical conditions and lifestyle factors may increase the risk of having a stroke. However, it is not known which one of these may have stronger influence than the other. The main purpose of this visualisation is to investigate if any of the factors occurs more often than the other in stroke patients and if there is any correlation between body mass index and blood glucose levels and stroke occurrence. 
-
+Stroke is one of the **leading causes of death and disability** in the UK and the world. According to UK statistics **100,000 people** have a stroke each year. Although anyone can have a stroke at any age, certain medical conditions and lifestyle factors may increase the risk of having a stroke. However, it is not known which one of these may have a stronger influence than the other. The main purpose of this visualisation is to investigate if any of the factors occur more often than the other in patients that suffered from a stroke and if there is any connection between body mass index and blood glucose levels and stroke occurrence. 
 
 ### **Data origins**
 The data used in this visualisation project has been downloaded from Kaggle which is a data repository of community published data & code. 
@@ -79,9 +78,9 @@ df$heart_disease <- df$heart_disease %>% recode('1' = "Yes", '0' = "No")
 
 #### **Foreword**
 
-The original data set contains 5110 rows. Unfortunately 201 had to be removed as had blanks for BMI. Nevertheless, although BMI was missing, there were other information in the rows, that I did not want to lose. Therefore I have first filtered out and created new dataset (df_stroke) for the stroke group only that was used only for the Visualisation 2. It does contain blank BMI rows, however it's not important as BMI is not included on that graph.
+The original data set contains 5110 rows. Unfortunately, 201 had to be removed as had blanks for BMI. Nevertheless, although BMI was missing, there was other information in the rows, that I did not want to lose. Therefore I have first filtered out and created a new dataset (df_stroke) for the stroke group only that was used only for the Visualisation 2. It does contain blank BMI rows, however, it's not important as BMI is not included on that graph.
 
-However, for the purpose of Visualisation 1, I have removed the blank BMI rows which left me with 4909 rows (209 stroke and 4700 no stroke). I have sampled the no stroke group for 209 random rows to match with the stroke group. Visualisation 1 is based on the group of 418 individuals (209 stroke, 209 no stroke).
+However, for the purpose of Visualisation 1, I have removed the blank BMI rows which left me with 4909 rows (209 stroke and 4700 no stroke). I have sampled the no stroke group for 209 random rows to match with the stroke group. Visualisation 1 is based on a group of 418 individuals (209 stroke, 209 no stroke).
 
 ```{r message=FALSE, warning=FALSE}
 #setting dataset for Visualisation 2 with only stroke patients
@@ -130,7 +129,7 @@ sd_no_stroke <- round(sd_no_stroke, digits = 2)
 
 ```
 
-#### **Visualisation 1:** Body mass index average glucose level vs age and stroke occurence
+#### **Visualisation 1:** Body mass index and blood glucose level vs age and stroke occurence
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.width=10, fig.height=6}
 coeff <- 10 #variable to use to set axis differently for 2 variables
 #colour spec to use in the visualisation 
@@ -138,10 +137,10 @@ bmi_color <- "#69b3a2"
 avg_glucose_color <- rgb(0.2, 0.6, 0.9, 1)
 
 #plot vis1
-ggplot(df_new_sample, aes(x=age, col=stroke)) +
+p1 <- ggplot(df_new_sample, aes(x=age, col=stroke))
   
-  geom_point( aes(y=bmi), color=bmi_color, shape=17, alpha=0.5) + 
-  geom_point( aes(y=avg_glucose_level /coeff), 
+p1 + geom_point( aes(y=bmi), color=bmi_color, shape=17, alpha=0.5) + 
+    geom_point( aes(y=avg_glucose_level /coeff), 
               color=avg_glucose_color, 
               shape = 19, alpha=0.5) +
   scale_colour_viridis_d(option = "C", direction = -1) + #colorblind palette
@@ -174,12 +173,12 @@ ggsave(here("plots", "visualisation_1_bmi_glucose_stroke.png"))
 ```
 #### **Commentary**
 
-The graph above allows to conclude, that glucose levels not only are increasing with age but also that individuals that suffered from stroke have higher glucose levels (mean avg glucose levels stroke =  `r means_stroke$avg_glucose_level` vs no stroke =  `r means_no_stroke$avg_glucose_level`). As diabetes is a known risk for cardiovascular disease, which can lead to a stroke, the observed tendency is plausible.
-Nevertheless, body mass index opposite to the glucose levels, is not significantly higher in people that had stroke (mean bmi stroke = `r means_stroke$bmi` vs no stroke `r means_no_stroke$bmi`). Although, it can be observed that BMI increases with age, which could be a result of decrease in physical activity with age.
+The graph above allows concluding, that glucose levels not only are increasing with age but also that individuals that suffered from stroke have higher glucose levels (mean avg glucose levels stroke =  `r means_stroke$avg_glucose_level` vs no stroke =  `r means_no_stroke$avg_glucose_level`). As diabetes is a known risk for cardiovascular disease, which can lead to a stroke, the observed tendency is plausible.
+Nevertheless, body mass index opposite to the glucose levels is not significantly higher in people that had a stroke (mean BMI stroke = `r means_stroke$bmi` vs no stroke `r means_no_stroke$bmi`). Although, it can be observed that BMI increases with age, which could be a result of a decrease in physical activity with age.
 
 ### **Stroke factors overview based on people who suffered from stroke**
 
-#### Preparing the data for the second visualisation
+#### Preparation of the data for the second visualisation
 ```{r message=FALSE, warning=FALSE}
 #gender count of stroke patients
 males_stroke_total <- nrow(df_stroke[df_stroke$gender == "Male",])
@@ -253,12 +252,11 @@ p2 <- ggplot(df_stroke,aes(condition, fill=measurement))
 ```
 #### **Commentary**
 
-The purpose of this chart was to look at only the stroke patients (N= `r n_stroke`) risk factors to see if any factor stands out more due to occurring in more individuals.  Surprisingly majority of the individuals that got stroke were married. Although correlation does not cause causation, we could point a stress as contributing factor. Nevertheless, we can see slight differences for gender (F = `r females_stroke_total` vs M = `r males_stroke_total`) and work type (Private = 60%) and leaving in urban area (54%). Smoking status data could be interesting to evaluate as its known for causing cardiovascular diseases however 19% records did not contain this information. Beside the marriage factor, unfortunately none of these factors occurs often enough in stroke patients to draw any major conclusions. Surprisingly and opposite to scientific research results, the heart disease and hypertension were not present in many patients that suffered from stroke. 
-
+The purpose of this chart was to look at only the stroke patients (N= `r n_stroke`) risk factors to see if any factor stands out more due to occurring in more individuals.  Surprisingly the majority of the individuals that got stroke were married however the correlation does not cause causation. Nevertheless, we can see slight differences for gender (F = `r females_stroke_total` vs M = `r males_stroke_total`) and work type (Private = 60%) and leaving in urban area (54%). Smoking status data could be interesting to evaluate as it is known for causing cardiovascular diseases however 19% of records did not contain this information. Besides the marriage factor, unfortunately, none of these factors occurs often enough in stroke patients to draw any major conclusions. Surprisingly and opposite to scientific research results, heart disease and hypertension were not present in many patients that suffered from a stroke. 
 
 ### **Summary and Discussion**
 
-Initially when started this project, I was a bit confused as what to do with the data. I wanted to use as much of data in the set as possible to create my visualisation. Along the way, I have tried different plots, tried using animation, but decided that it does not add any benefit to what I want to present. Nevertheless, once progressed, understood more and more how R works, so it became easier and every day had more ideas and was eager to try if they work. My self-learning got to the point that could have quickly identify what is wrong and how to make it work. Substantial amount of time I have spent on re-reading the code and trying to find simpler and less space-consuming code that works in the same way. I have truly enjoyed this project and will definitely use R going forward for my work instead of Excel.
+Initially, when started this project, I was a bit confused as to what to do with the data. I wanted to use as much data in the set as possible to create my visualisation. Along the way, I have tried different plots, and tried using animation, but decided that it does not add any benefit to what I want to present. Nevertheless, once progressed, understood more and more about how R works, so it became easier and every day had more ideas and was eager to try if they work. My self-learning got to the point where could quickly identify what is wrong and how to make it work. A substantial amount of time I have spent on re-reading the code and trying to find simpler and less space-consuming code that works in the same way. I have truly enjoyed this project and will use R going forward for my work instead of Excel.
 
 #### **Caveats:**
 1. Missing values for smoking status (19%) so could not assess properly the impact of smoking
