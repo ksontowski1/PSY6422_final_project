@@ -2,8 +2,8 @@
 title: "stroke"
 output:
   
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, message=FALSE, warning=FALSE, include = FALSE}
@@ -111,7 +111,7 @@ df_new_sample <- filter(df_new_sample, gender !="Other")
 males_total <- nrow(df_new_sample[df_new_sample$gender == "Female",])
 females_total <- nrow(df_new_sample[df_new_sample$gender == "Male",])
 ```
-### **Average glucose levels and BMI over lifespan and stroke occurence**
+### **Blood glucose level, BMI vs age and stroke occurence**
 
 #### Preparation of the data for the first visualisation
 ```{r message=FALSE, warning=FALSE}
